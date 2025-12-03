@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Result - Smart Study Biology Classes</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c9);
+            margin: 0;
+            padding: 0;
+            color: rgb(249, 4, 45);
+        }
+        .main-container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .result-container {
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgb(249, 4, 45);
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .header {
+            background: linear-gradient(90deg, rgb(249, 4, 45), rgb(244, 125, 145), rgb(245, 169, 181));
+            padding: 30px;
+            color: white;
+            font-size: 34px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: -40px -20px 30px -20px;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+        }
+        .celebration {
+            font-size: 40px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .message {
+            font-size: 24px;
+            margin: 20px 0;
+            color: rgb(249, 4, 45);
+            font-weight: 600;
+        }
+        .details {
+            background: #f1f8e9;
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border-left: 6px solid rgb(249, 4, 45);
+            font-size: 20px;
+        }
+
+        /* Question Review Block */
+        .review-box {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgb(249, 4, 45);
+        }
+        .question {
+            font-size: 20px;
+            font-weight: bold;
+            color: rgb(249, 4, 45);
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .wrong {
+            color: red;
+            font-weight: bold;
+        }
+        .option {
+            margin: 4px 0;
+            font-size: 17px;
+        }
+        .selected {
+            font-weight: bold;
+            color: #0277bd;
+        }
+        .explanation {
+            background: #fff8e1;
+            border-left: 5px solid rgb(249, 4, 45);
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 8px;
+            font-size: 17px;
+            color: #444;
+        }
+        .home-btn {
+            margin-top: 40px;
+        }
+        .home-btn a {
+            background: linear-gradient(90deg, rgb(249, 4, 45), rgb(251, 139, 157));
+            color: white;
+            text-decoration: none;
+            padding: 15px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 50px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgb(249, 4, 45);
+            transition: 0.3s;
+        }
+        .home-btn a:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgb(249, 4, 45);
+        }
+
+        .logo-box {
+            text-align: center;
+            padding: 20px 0;
+            background: #ffffff;
+            border-bottom: 3px solid rgb(249, 4, 45);
+        }
+        .logo-box img {
+            width: 130px;
+            height: auto;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-container">
+
+    <div class="logo-box">
+        <img src="{% static 'images/smartlogo.jpeg' %}" alt="Coaching Logo">
+    </div>
+
+    <!-- Score Card -->
+    <div class="result-container">
+        <div class="header">Result</div>
+
+        {% if percentage >= 80 %}
+            <div class="celebration">🌟 Excellent! 🌟</div>
+        {% elif percentage >= 60 %}
+            <div class="celebration">👍 Great Job!</div>
+        {% elif percentage >= 40 %}
+            <div class="celebration">🙂 Good Effort!</div>
+        {% else %}
+            <div class="celebration">💪 Keep Practicing!</div>
+        {% endif %}
+
+        <div class="message">
+            {% if percentage >= 80 %}
+                Outstanding Performance! You're a Biology Star ✨
+            {% elif percentage >= 60 %}
+                Well Done! You're doing great. Keep it up!
+            {% elif percentage >= 40 %}
+                Not bad! A little more practice will do wonders 🌱
+            {% else %}
+                Don't give up! Every expert was once a beginner 🌟
+            {% endif %}
+        </div>
+
+        <div class="details">
+            <b>Percentage:</b> {{ percentage }}% <br>
+            <b>Correct Answers:</b> {{ score }} / {{ total }}
+        </div>
+    </div>
+
+
+    <!-- Detailed Review Section -->
+    <h2 style="text-align:center; color:#1b5e20; margin-top:40px;">📘 Detailed Answer Review</h2>
+
+    {% for item in result %}
+        <div class="review-box">
+            <div class="question">
+                Q{{ forloop.counter }}. {{ item.question }}
+            </div>
+
+            <!-- Options Display -->
+            <div class="option {% if item.selected == 'a' %}selected{% endif %}">
+                {{ item.options.0 }}
+            </div>
+            <div class="option {% if item.selected == 'b' %}selected{% endif %}">
+                {{ item.options.1 }}
+            </div>
+            <div class="option {% if item.selected == 'c' %}selected{% endif %}">
+                {{ item.options.2 }}
+            </div>
+            <div class="option {% if item.selected == 'd' %}selected{% endif %}">
+                {{ item.options.3 }}
+            </div>
+
+            <!-- Selected vs Correct -->
+            <p>
+                <b>Your Answer:</b>
+                {% if item.selected %}
+                    {% if item.selected == item.correct %}
+                        <span class="correct">(Correct)</span>
+                    {% else %}
+                        <span class="wrong">(Wrong)</span>
+                    {% endif %}
+                {% else %}
+                    <span style="color:gray;">Not Attempted</span>
+                {% endif %}
+            </p>
+
+            <p>
+                <b>Correct Answer:</b>
+                <span class="correct">({{ item.correct }})</span>
+            </p>
+
+            <!-- EXPLANATION BOX -->
+            <div class="explanation">
+                <b>Explanation:</b> {{ item.explanation }}
+            </div>
+
+        </div>
+    {% endfor %}
+
+    <!-- Button -->
+    <div class="home-btn" style="text-align:center;">
+        <a href="http://localhost:8000/testpaper">Take Another Test</a>
+    </div>
+
+</div>
+
+</body>
+</html>
